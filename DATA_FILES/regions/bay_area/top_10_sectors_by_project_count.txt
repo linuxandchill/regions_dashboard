@@ -1,0 +1,18 @@
+SELECT
+    sectors.name  AS `sectors.name`,
+    COUNT(DISTINCT projects.id ) AS `projects.count`
+FROM proposals_institutions  AS proposals_institutions
+LEFT JOIN swp_institutions_dt AS institutions ON proposals_institutions.institution_id = institutions.id
+LEFT JOIN proposals  AS projects ON proposals_institutions.proposal_id = projects.id
+LEFT JOIN proposals_funds  AS proposals_funds ON projects.id = proposals_funds.proposal_id
+LEFT JOIN funds  AS funds ON proposals_funds.fund_id = funds.id
+LEFT JOIN budget_items ON proposals_institutions.proposal_id = budget_items.proposal_id
+      and proposals_institutions.institution_id = budget_items.institution_id
+LEFT JOIN years  AS budget_item_year ON budget_item_year.id = budget_items.year_id
+LEFT JOIN  proposals_sectors ON proposals_sectors.proposal_id = projects.id
+LEFT JOIN sectors  AS sectors ON proposals_sectors.sector_id = sectors.id
+
+WHERE (institutions.region = 'Bay Area') AND (budget_item_year.name = '2016-17') AND (funds.id in (1, 2) AND projects.deleted = 0)
+GROUP BY 1
+ORDER BY COUNT(DISTINCT projects.id ) DESC
+LIMIT 500

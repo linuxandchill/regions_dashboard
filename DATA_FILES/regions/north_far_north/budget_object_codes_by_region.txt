@@ -1,0 +1,46 @@
+SELECT zz1.* FROM (
+    SELECT
+    @min_rank := IF(!_ct2, _rank, @min_rank) as m_rank
+    , zz.*
+    FROM (
+      SELECT
+      (@curType1 IS NOT NULL AND @curType1 = COALESCE(`institutions.region`,'')) as _ct2
+      , @curType1 := COALESCE(`institutions.region`,'') as _ct1
+      , xx.*
+      FROM (
+        SELECT * FROM (
+          SELECT
+          (
+           CASE COALESCE(`object_codes.object_code`,'')
+           WHEN @curType
+           THEN @curRow := @curRow + 1
+           ELSE @curRow := 1 AND @curType := COALESCE(`object_codes.object_code`,'') END
+          ) AS _rank,
+          ww.*
+          FROM (
+            SELECT
+            institutions.region  AS `institutions.region`,
+            object_codes.name  AS `object_codes.object_code`,
+            COALESCE(COALESCE((0E0 +  ( SUM(DISTINCT (CAST(FLOOR(COALESCE(budget_items.amount ,0)*(1000000*1.0)) AS DECIMAL(65,0))) + (CAST(CONV(SUBSTR(MD5(budget_items.id ),1,16),16,10) AS DECIMAL(65)) *18446744073709551616 + CAST(CONV(SUBSTR(MD5(budget_items.id ), 17, 16), 16, 10) AS DECIMAL(65))) ) - SUM(DISTINCT (CAST(CONV(SUBSTR(MD5(budget_items.id ),1,16),16,10) AS DECIMAL(65)) *18446744073709551616 + CAST(CONV(SUBSTR(MD5(budget_items.id ), 17, 16), 16, 10) AS DECIMAL(65)))) ) ) / (0E0 + (1000000*1.0)), 0), 0) AS `budget_items.budget`
+            FROM proposals_institutions  AS proposals_institutions
+            LEFT JOIN swp_institutions_dt AS institutions ON proposals_institutions.institution_id = institutions.id
+            LEFT JOIN proposals  AS projects ON proposals_institutions.proposal_id = projects.id
+            LEFT JOIN proposals_funds  AS proposals_funds ON projects.id = proposals_funds.proposal_id
+            LEFT JOIN funds  AS funds ON proposals_funds.fund_id = funds.id
+            LEFT JOIN budget_items ON proposals_institutions.proposal_id = budget_items.proposal_id
+            and proposals_institutions.institution_id = budget_items.institution_id
+            LEFT JOIN years  AS budget_item_year ON budget_item_year.id = budget_items.year_id
+            INNER JOIN object_codes  AS object_codes ON budget_items.object_code_id = object_codes.id
+
+            WHERE (institutions.region = 'North/Far North') AND (budget_item_year.name = '2016-17') AND (funds.id in (1, 2) AND projects.deleted = 0)
+            GROUP BY 1,2        ) as ww
+          , (SELECT @min_rank := 1000000, @curType1 := NULL, @curRow :=0, @curType := '') r
+          ORDER BY `object_codes.object_code`, `budget_items.budget` DESC
+          ) xx1
+          ORDER BY `institutions.region`, _rank
+          ) as xx
+          ORDER BY `institutions.region`, _rank, _ct2
+          ) as zz
+          ORDER BY `institutions.region`, _rank, _ct2
+          ) as zz1
+          WHERE m_rank <= 500 LIMIT 30000
