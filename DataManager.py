@@ -2,6 +2,8 @@ import pandas as pd
 import mysql.connector
 from sqlalchemy import create_engine
 from utils import import_query_file
+import sys
+import os
 
 class DataManager():
     def __init__(self):
@@ -86,22 +88,44 @@ class DataManager():
 
     #indicators region filtered
     def get_project_count(self, region_name='bay_area'): 
-        query = self.import_query_file('./DATA_FILES/regions/{}/project_count.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res['projects.count'][0]
+        #for every folder in DATA_FILES/regions run query on project_count.txt
+        project_count_dict = {}
+        rootDir = "./DATA_FILES/regions/"
+        for dirName, subDirList, fileList in os.walk(rootDir):
+            print(dirName)
+            for fname in fileList:
+                if fname == 'project_count.txt':
+                    project_count_dict.update({dirName: fname})
 
-    def get_certified_projects(self, region_name='bay_area'):
-        query = self.import_query_file('./DATA_FILES/regions/{}/certified_projects.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res['projects.count'][0]
+        project_counts = {} 
+        for key, value in project_count_dict.items():
+            query = self.import_query_file('{}/{}'.format(key, value))
+            res = pd.read_sql(query, self.engine)
+            key = key.split("/")[-1]
+            project_counts.update({key: res['projects.count'][0]})
+            
+        return project_counts
 
-    def get_total_requested(self, region_name='bay_area'):
-        query = self.import_query_file('./DATA_FILES/regions/{}/total_requested.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res['budget_items.budget'][0]
+'''
+query = self.import_query_file('./DATA_FILES/regions/{}/project_count.txt'.format(str(region_name)))
 
-    def get_total_certified(self, region_name='bay_area'):
-        query = self.import_query_file('./DATA_FILES/regions/{}/total_certified.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res['budget_items.budget'][0]
+'''
 
+'''
+
+def get_certified_projects(self, region_name='bay_area'):
+query = self.import_query_file('./DATA_FILES/regions/{}/certified_projects.txt'.format(str(region_name)))
+res = pd.read_sql(query, self.engine)
+return res['projects.count'][0]
+
+def get_total_requested(self, region_name='bay_area'):
+query = self.import_query_file('./DATA_FILES/regions/{}/total_requested.txt'.format(str(region_name)))
+res = pd.read_sql(query, self.engine)
+return res['budget_items.budget'][0]
+
+def get_total_certified(self, region_name='bay_area'):
+query = self.import_query_file('./DATA_FILES/regions/{}/total_certified.txt'.format(str(region_name)))
+res = pd.read_sql(query, self.engine)
+return res['budget_items.budget'][0]
+
+'''

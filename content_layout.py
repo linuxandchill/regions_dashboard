@@ -26,9 +26,10 @@ def render_radio_items():
     return region_options
 
 def build_indicator(data): 
+    pass
 
 def build_indicator_project_count(data,region):
-    return dm.get_project_count_ind(region)
+    return dm.get_project_count(region)
 
 
 content_layout = html.Div([
