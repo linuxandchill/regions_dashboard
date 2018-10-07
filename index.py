@@ -12,10 +12,8 @@ from app import app
 
 data_manager = DataManager()
 
-project_count = data_manager.get_project_count()
-certified_projects = data_manager.get_certified_projects()
-total_requested = data_manager.get_total_requested()
-total_certified = data_manager.get_total_certified()
+project_counts = data_manager.get_project_count()
+print(project_counts)
 
 app.layout = html.Div([
     html.Div([
@@ -23,25 +21,11 @@ app.layout = html.Div([
         ],
         className='row header', style={'padding-top':'10px', 'background':'#00c6ff',
 'background': '-webkit-linear-gradient(to right, #00c6ff, #0072ff)',
-'background': 'linear-gradient(to right, #00c6ff, #0072ff)' }
-        ),
-
-    html.Div(project_count,
+'background': 'linear-gradient(to right, #00c6ff, #0072ff)' }), 
+        
+    html.Div([270,  99, 97,  189, 89, 69, 66, 879], 
         id="project-count-indicator",
         style={"display":"none"}),
-
-    html.Div(certified_projects,
-        id="certified-projects-indicator",
-        style={"display":"none"}),
-
-    html.Div(total_requested,
-        id="total-requested-indicator",
-        style={"display":"none"}),
-
-    html.Div(total_certified,
-        id="total-certified-indicator",
-        style={"display":"none"}),
-    ########
 
     html.Div([
         html.Div(id='main-content', className='row', style={"margin": "2% 3%"}), 

@@ -25,12 +25,25 @@ def render_radio_items():
 
     return region_options
 
-def build_indicator(data): 
-    pass
-
-def build_indicator_project_count(data,region):
-    return dm.get_project_count(region)
-
+def build_indicator(data,region): 
+    #data comes in as dictionary {'bay_area': 270}
+    project_counts = {'bay_area': 270, 'central_mother_lode': 99, 'north_far_north': 97, 'los_angeles_orange_county': 189, 'inland_empire_desert': 89, 'south_central_coast': 69, 'san_diego_imperial': 66, 'statewide': 879}
+    if region == 'bay_area':
+        return project_counts['bay_area']
+    elif region == 'central_mother_lode':
+        return project_counts['central_mother_lode']
+    elif region == 'north_far_north':
+        return project_counts['north_far_north']
+    elif region == 'los_angeles_orange_county':
+        return project_counts['los_angeles_orange_county']
+    elif region == 'inland_empire_desert':
+        return project_counts['inland_empire_desert']
+    elif region == 'south_central_coast':
+        return project_counts['south_central_coast']
+    elif region == 'san_diego_imperial':
+        return project_counts['san_diego_imperial']
+    else:
+        return project_counts['statewide']
 
 content_layout = html.Div([
     ### RADIO BUTTONS 
@@ -139,19 +152,12 @@ content_layout = html.Div([
         ], className = 'row', style={"margin":"10"}), 
     ### CLOSING MAIN BODY DIV
     ], )
-
-
-
-
-
-@app.callback(Output("project-count-ind", "children"),
-        [
-            Input("project-count-indicator", "children"),
-            Input("regions-radio-items", "value")
+@app.callback(Output("project-count-ind", "children"), 
+        [ Input("project-count-indicator", "children"),
+            Input("regions-radio-items","value")
             ])
-def project_count_indicator_callback(data, region):
-    return build_indicator_project_count(data, region)
-
+def project_count_indicator_callback(data,region):
+    return build_indicator(data,region)
 
 
 '''
