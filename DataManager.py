@@ -82,20 +82,56 @@ class DataManager():
             
         return final_dict
 
-    def get_top_10_sectors_by_project_count(self, region_name='bay_area'): 
-        query = self.import_query_file('./DATA_FILES/regions/{}/top_10_sectors_by_project_count.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res
+    def get_top_10_sectors_by_project_count(self): 
+        temp_dict = {}
+        rootDir = "./DATA_FILES/regions/"
+        for dirName, subDirList, fileList in os.walk(rootDir):
+            for fname in fileList:
+                if fname == 'top_10_sectors_by_project_count.txt':
+                    temp_dict.update({dirName: fname})
+
+        final_dict = {} 
+        for key, value in temp_dict.items():
+            query = self.import_query_file('{}/{}'.format(key, value))
+            res = pd.read_sql(query, self.engine)
+            key = key.split("/")[-1]
+            final_dict.update({key: res})
+            
+        return final_dict
 
     def get_budget_object_codes_by_region(self, region_name='bay_area'):
-        query = self.import_query_file('./DATA_FILES/regions/{}/budget_object_codes_by_region.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res 
+        temp_dict = {}
+        rootDir = "./DATA_FILES/regions/"
+        for dirName, subDirList, fileList in os.walk(rootDir):
+            for fname in fileList:
+                if fname == 'budget_object_codes_by_region.txt':
+                    temp_dict.update({dirName: fname})
 
-    def get_top_6_codes(self, region_name='bay_area'): 
-        query = self.import_query_file('./DATA_FILES/regions/{}/top_6_codes.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res
+        final_dict = {} 
+        for key, value in temp_dict.items():
+            query = self.import_query_file('{}/{}'.format(key, value))
+            res = pd.read_sql(query, self.engine)
+            key = key.split("/")[-1]
+            final_dict.update({key: res})
+            
+        return final_dict
+
+    def get_top_6_codes(self): 
+        temp_dict = {}
+        rootDir = "./DATA_FILES/regions/"
+        for dirName, subDirList, fileList in os.walk(rootDir):
+            for fname in fileList:
+                if fname == 'top_6_codes.txt':
+                    temp_dict.update({dirName: fname})
+
+        final_dict = {} 
+        for key, value in temp_dict.items():
+            query = self.import_query_file('{}/{}'.format(key, value))
+            res = pd.read_sql(query, self.engine)
+            key = key.split("/")[-1]
+            final_dict.update({key: res})
+            
+        return final_dict
 
     #indicators region filtered
     def get_project_count(self): 

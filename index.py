@@ -23,6 +23,7 @@ app.layout = html.Div([
 'background': '-webkit-linear-gradient(to right, #00c6ff, #0072ff)',
 'background': 'linear-gradient(to right, #00c6ff, #0072ff)' }), 
         
+    ### to gather data at app init,, unused atm
     html.Div(children=[], 
         id="project-count-indicator",
         style={"display":"none"}),

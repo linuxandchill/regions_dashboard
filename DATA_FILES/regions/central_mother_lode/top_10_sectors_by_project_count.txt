@@ -12,7 +12,7 @@ LEFT JOIN years  AS budget_item_year ON budget_item_year.id = budget_items.year_
 LEFT JOIN  proposals_sectors ON proposals_sectors.proposal_id = projects.id
 LEFT JOIN sectors  AS sectors ON proposals_sectors.sector_id = sectors.id
 
-WHERE (institutions.region = 'Central/ Mother Lode') AND (budget_item_year.name = '2016-17') AND (funds.id in (1, 2) AND projects.deleted = 0)
+WHERE (institutions.region = 'Central/Mother Lode') AND (budget_item_year.name = '2016-17') AND (funds.id in (1, 2) AND projects.deleted = 0)
 GROUP BY 1
 ORDER BY COUNT(DISTINCT projects.id ) DESC
 LIMIT 500

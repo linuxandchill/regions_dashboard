@@ -60,32 +60,13 @@ content_layout = html.Div([
     ### TWO (6 cols each) BAR CHARTS 
     html.Div([
         html.Div([
-            html.P("Top 10 Sectors by Project Count"),
-            '''
-            dcc.Graph(id='top-10-sectors-by-project-count',
-                figure = {
-                    'data': [trace0, trace1, trace2, trace3],
-                    'layout': go.Layout(
-                        xaxis=dict(tickangle=-45),
-                        )
-                    }
+            dcc.Graph(id='top-10-sectors-by-project-count-bar',
                 ),
-            '''
             ], className="six columns chart_div"), 
 
         html.Div([
-            html.P("Project Top 10 - Top 6 Codes"), 
-            '''
-            dcc.Graph(id='project-top-10-top-6-codes',
-                figure = {
-                    'data': [trace0, trace1, trace2, trace3],
-                    'layout': go.Layout(
-                        xaxis=dict(tickangle=-45),
-                        barmode='group',
-                        )
-                    }
+            dcc.Graph(id='project-top-10-top-6-codes-bar',
                 ),
-            '''
             ], className="six columns chart_div"), 
 
         ], className = 'row', style={"margin":"10"}), 
@@ -94,17 +75,8 @@ content_layout = html.Div([
     html.Div([
         html.Div([
             html.P("Budget Object Codes by Region"), 
-            '''
-            dcc.Graph(id='budget-object-codes-by-region',
-                figure = {
-                    'data': [trace0, trace1, trace2, trace3],
-                    'layout': go.Layout(
-                        xaxis=dict(tickangle=-45),
-                        barmode='group',
-                        )
-                    }
+            dcc.Graph(id='budget-object-codes-by-region-bar',
                 ),
-            '''
             ], className="chart_div"), 
         ], className = 'row', style={"margin":"10"}), 
 
@@ -162,5 +134,26 @@ def sectors_by_region_pie_callback(region):
     return components.build_sectors_by_region_pie(region)
 
 
+@app.callback(Output("top-10-sectors-by-project-count-bar", "figure"), 
+        [
+            Input("regions-radio-items", "value")
+            ])
+def top_10_sectors_by_project_count_callback(region):
+    return components.build_top_10_sectors_by_project_count_bar(region)
 
+
+@app.callback(Output("project-top-10-top-6-codes-bar", "figure"),
+        [
+            Input("regions-radio-items", "value")
+            ])
+def top_6_codes_callback(region):
+    return components.build_top_6_codes(region)
+
+
+@app.callback(Output("budget-object-codes-by-region-bar", "figure"),
+        [
+            Input("regions-radio-items","value")
+            ])
+def budget_object_codes_by_region(region):
+    return components.build_budget_object_codes_by_region(region)
 
