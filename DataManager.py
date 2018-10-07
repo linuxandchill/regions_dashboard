@@ -106,26 +106,58 @@ class DataManager():
         return project_counts
 
     def get_certified_projects(self, region_name='bay_area'):
-        query = self.import_query_file('./DATA_FILES/regions/{}/certified_projects.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res['projects.count'][0]
+        certified_projects_dict = {}
+        rootDir = "./DATA_FILES/regions/"
+        for dirName, subDirList, fileList in os.walk(rootDir):
+            for fname in fileList:
+                if fname == 'certified_projects.txt':
+                    certified_projects_dict.update({dirName: fname})
 
-    def get_total_requested(self, region_name='bay_area'):
-        query = self.import_query_file('./DATA_FILES/regions/{}/total_requested.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res['budget_items.budget'][0]
+        certified_projects = {} 
+        for key, value in certified_projects_dict.items():
+            query = self.import_query_file('{}/{}'.format(key, value))
+            res = pd.read_sql(query, self.engine)
+            key = key.split("/")[-1]
+            certified_projects.update({key: res['projects.count'][0]})
 
-    def get_total_certified(self, region_name='bay_area'):
-        query = self.import_query_file('./DATA_FILES/regions/{}/total_certified.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res['budget_items.budget'][0]
-
-'''
-query = self.import_query_file('./DATA_FILES/regions/{}/project_count.txt'.format(str(region_name)))
-
-'''
-
-'''
+        return certified_projects
 
 
-'''
+    def get_total_requested(self):
+        total_requested_dict = {}
+        rootDir = "./DATA_FILES/regions/"
+        for dirName, subDirList, fileList in os.walk(rootDir):
+            for fname in fileList:
+                if fname == 'total_requested.txt':
+                    total_requested_dict.update({dirName: fname})
+
+        total_requested = {} 
+        for key, value in total_requested_dict.items():
+            query = self.import_query_file('{}/{}'.format(key, value))
+            res = pd.read_sql(query, self.engine)
+            key = key.split("/")[-1]
+            total_requested.update({key: '${:.0f}'.format(res['budget_items.budget'][0])})
+
+        return total_requested
+
+    def get_total_certified(self):
+        total_certified_dict = {}
+        rootDir = "./DATA_FILES/regions/"
+        for dirName, subDirList, fileList in os.walk(rootDir):
+            for fname in fileList:
+                if fname == 'total_certified.txt':
+                    total_certified_dict.update({dirName: fname})
+
+
+        total_certified = {}
+        for key, value in total_certified_dict.items(): 
+            query = self.import_query_file('{}/{}'.format(key, value))
+            res = pd.read_sql(query, self.engine)
+            key = key.split("/")[-1]
+            total_certified.update({key: '${:.0f}'.format(res['budget_items.budget'][0])})
+
+        return total_certified
+
+
+
+

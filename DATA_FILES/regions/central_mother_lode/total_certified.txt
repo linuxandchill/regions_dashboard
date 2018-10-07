@@ -1,6 +1,5 @@
 SELECT
-    states.name  AS `states.status`,
-    COUNT(DISTINCT projects.id ) AS `projects.count`
+    COALESCE(COALESCE((0E0 +  ( SUM(DISTINCT (CAST(FLOOR(COALESCE(budget_items.amount ,0)*(1000000*1.0)) AS DECIMAL(65,0))) + (CAST(CONV(SUBSTR(MD5(budget_items.id ),1,16),16,10) AS DECIMAL(65)) *18446744073709551616 + CAST(CONV(SUBSTR(MD5(budget_items.id ), 17, 16), 16, 10) AS DECIMAL(65))) ) - SUM(DISTINCT (CAST(CONV(SUBSTR(MD5(budget_items.id ),1,16),16,10) AS DECIMAL(65)) *18446744073709551616 + CAST(CONV(SUBSTR(MD5(budget_items.id ), 17, 16), 16, 10) AS DECIMAL(65)))) ) ) / (0E0 + (1000000*1.0)), 0), 0) AS `budget_items.budget`
 FROM proposals_institutions  AS proposals_institutions
 LEFT JOIN swp_institutions_dt AS institutions ON proposals_institutions.institution_id = institutions.id
 LEFT JOIN proposals  AS projects ON proposals_institutions.proposal_id = projects.id
@@ -11,9 +10,13 @@ LEFT JOIN budget_items ON proposals_institutions.proposal_id = budget_items.prop
       and proposals_institutions.institution_id = budget_items.institution_id
 LEFT JOIN years  AS budget_item_year ON budget_item_year.id = budget_items.year_id
 
-WHERE (institutions.region = 'Central/Mother Lode') AND (budget_item_year.name = '2016-17') AND (funds.id in (1, 2) AND projects.deleted = 0)
-GROUP BY 1
-ORDER BY COUNT(DISTINCT projects.id ) DESC
+WHERE (institutions.region = 'Central/Mother Lode') AND (states.name = 'Certified') AND (budget_item_year.name = '2016-17') AND (funds.id in (1, 2) AND projects.deleted = 0)
 LIMIT 500
+
+
+
+
+
+
 
 

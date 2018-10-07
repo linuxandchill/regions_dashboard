@@ -10,10 +10,10 @@ from DataManager import *
 from content_layout import content_layout
 from app import app
 
-data_manager = DataManager()
+#data_manager = DataManager()
 
-project_counts = data_manager.get_project_count()
-print(project_counts)
+#project_counts = data_manager.get_project_count()
+#print(project_counts)
 
 app.layout = html.Div([
     html.Div([
@@ -23,8 +23,20 @@ app.layout = html.Div([
 'background': '-webkit-linear-gradient(to right, #00c6ff, #0072ff)',
 'background': 'linear-gradient(to right, #00c6ff, #0072ff)' }), 
         
-    html.Div([270,  99, 97,  189, 89, 69, 66, 879], 
+    html.Div(children=[], 
         id="project-count-indicator",
+        style={"display":"none"}),
+
+    html.Div(children=[], 
+        id="certified-projects-indicator",
+        style={"display":"none"}),
+
+    html.Div(children=[], 
+        id="total-requested-indicator",
+        style={"display":"none"}),
+
+    html.Div(children=[], 
+        id="total-certified-indicator",
         style={"display":"none"}),
 
     html.Div([

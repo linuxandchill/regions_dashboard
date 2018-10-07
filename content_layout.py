@@ -9,6 +9,7 @@ from components import *
 from app import app
 import components
 from DataManager import DataManager
+from components import *
 
 dm = DataManager()
 
@@ -24,26 +25,6 @@ def render_radio_items():
         region_options.append({'label':str(region), 'value': str(region).lower().replace(" ", "_").replace("/", "_") })
 
     return region_options
-
-def build_indicator(data,region): 
-    #data comes in as dictionary {'bay_area': 270}
-    project_counts = {'bay_area': 270, 'central_mother_lode': 99, 'north_far_north': 97, 'los_angeles_orange_county': 189, 'inland_empire_desert': 89, 'south_central_coast': 69, 'san_diego_imperial': 66, 'statewide': 879}
-    if region == 'bay_area':
-        return project_counts['bay_area']
-    elif region == 'central_mother_lode':
-        return project_counts['central_mother_lode']
-    elif region == 'north_far_north':
-        return project_counts['north_far_north']
-    elif region == 'los_angeles_orange_county':
-        return project_counts['los_angeles_orange_county']
-    elif region == 'inland_empire_desert':
-        return project_counts['inland_empire_desert']
-    elif region == 'south_central_coast':
-        return project_counts['south_central_coast']
-    elif region == 'san_diego_imperial':
-        return project_counts['san_diego_imperial']
-    else:
-        return project_counts['statewide']
 
 content_layout = html.Div([
     ### RADIO BUTTONS 
@@ -152,30 +133,35 @@ content_layout = html.Div([
         ], className = 'row', style={"margin":"10"}), 
     ### CLOSING MAIN BODY DIV
     ], )
+
 @app.callback(Output("project-count-ind", "children"), 
-        [ Input("project-count-indicator", "children"),
+        [ 
             Input("regions-radio-items","value")
             ])
-def project_count_indicator_callback(data,region):
-    return build_indicator(data,region)
+def project_count_indicator_callback(region):
+    return components.build_project_count_indicator(region)
 
 
-'''
-@app.callback(Output("project-count-ind", "children"), 
-        [
-            Input("project-count-indicator-statewide", "children"), 
-            ])
-def project_count_indicator_callback_statewide(data):
-    return build_indicator_statewide(data)
 @app.callback(Output("certified-projects-ind", "children"),
         [
-            Input("certified-projects-indicator-statewide", "children"),
-            Input("regions-radio-items", "value"),
+            Input("regions-radio-items", "value")
             ])
-def certified_projects_indicator_callback(data, selected_region):
-    return build_indicator(data, selected_region)
+def certified_projects_indicator_callback(region):
+    return components.build_certified_projects_indicator(region)
 
-'''
+@app.callback(Output("total-requested-ind", "children"), 
+        [
+            Input("regions-radio-items", "value")
+            ])
+def total_requested_indicator_callback(region):
+    return components.build_total_requested_indicator(region)
 
+
+@app.callback(Output("total-certified-ind", "children"),
+        [
+            Input("regions-radio-items", "value")
+            ])
+def total_certified_indicator_callback(region): 
+    return components.build_total_certified_indicator(region)
 
 
