@@ -11,6 +11,7 @@ project_counts = dm.get_project_count()
 certified_projects = dm.get_certified_projects()
 total_requested = dm.get_total_requested()
 total_certified  = dm.get_total_certified()
+sectors_by_region = dm.get_sectors_by_region()
 
 def pull_regions():
     sectors_by_region_statewide = dm.get_sectors_by_region_statewide()
@@ -110,18 +111,124 @@ def build_total_requested_indicator(region):
 
 def build_total_certified_indicator(region):
     if region == 'bay_area':
-        return total_certified['bay_area']
+        return total_certified[region]
     elif region == 'central_mother_lode':
-        return total_certified['central_mother_lode']
+        return total_certified[region]
     elif region == 'north_far_north':
-        return total_certified['north_far_north']
+        return total_certified[region]
     elif region == 'los_angeles_orange_county':
-        return total_certified['los_angeles_orange_county']
+        return total_certified[region]
     elif region == 'inland_empire_desert':
-        return total_certified['inland_empire_desert']
+        return total_certified[region]
     elif region == 'south_central_coast':
-        return total_certified['south_central_coast']
+        return total_certified[region]
     elif region == 'san_diego_imperial':
-        return total_certified['san_diego_imperial']
+        return total_certified[region]
     else:
         return total_certified['statewide']
+
+def build_sectors_by_region_pie(region):
+    if region == 'bay_area':
+        return {'data': [
+            go.Pie(
+                labels = sectors_by_region[region]['sectors.sector'],
+                values = sectors_by_region[region]['proposals_institutions.count'],
+                marker = dict(line=dict(color='#000000', width=2))
+                )
+            ],
+                    'layout': go.Layout(
+                        title="Sectors by Region", 
+                        legend=dict(font=dict(size=12))
+                        )}
+
+    elif region == 'central_mother_lode':
+        return {'data': [
+            go.Pie(
+                labels = sectors_by_region[region]['sectors.sector'],
+                values = sectors_by_region[region]['proposals_institutions.count'],
+                marker = dict(line=dict(color='#000000', width=2))
+                )
+            ],
+                    'layout': go.Layout(
+                        title="Sectors by Region", 
+                        legend=dict(font=dict(size=12))
+                        )}
+
+    elif region == 'north_far_north':
+        return {'data': [
+            go.Pie(
+                labels = sectors_by_region[region]['sectors.sector'],
+                values = sectors_by_region[region]['proposals_institutions.count'],
+                marker = dict(line=dict(color='#000000', width=2))
+                )
+            ],
+                    'layout': go.Layout(
+                        title="Sectors by Region", 
+                        legend=dict(font=dict(size=12))
+                        )}
+
+    elif region == 'los_angeles_orange_county':
+        return {'data': [
+            go.Pie(
+                labels = sectors_by_region[region]['sectors.sector'],
+                values = sectors_by_region[region]['proposals_institutions.count'],
+                marker = dict(line=dict(color='#000000', width=2))
+                )
+            ],
+                    'layout': go.Layout(
+                        title="Sectors by Region", 
+                        legend=dict(font=dict(size=12))
+                        )}
+
+    elif region == 'inland_empire_desert':
+        return {'data': [
+            go.Pie(
+                labels = sectors_by_region[region]['sectors.sector'],
+                values = sectors_by_region[region]['proposals_institutions.count'],
+                marker = dict(line=dict(color='#000000', width=2))
+                )
+            ],
+                    'layout': go.Layout(
+                        title="Sectors by Region", 
+                        legend=dict(font=dict(size=12))
+                        )}
+
+    elif region == 'south_central_coast':
+        return {'data': [
+            go.Pie(
+                labels = sectors_by_region[region]['sectors.sector'],
+                values = sectors_by_region[region]['proposals_institutions.count'],
+                marker = dict(line=dict(color='#000000', width=2))
+                )
+            ],
+                    'layout': go.Layout(
+                        title="Sectors by Region", 
+                        legend=dict(font=dict(size=12))
+                        )}
+
+    elif region == 'san_diego_imperial':
+        return {'data': [
+            go.Pie(
+                labels = sectors_by_region[region]['sectors.sector'],
+                values = sectors_by_region[region]['proposals_institutions.count'],
+                marker = dict(line=dict(color='#000000', width=2))
+                )
+            ],
+                    'layout': go.Layout(
+                        title="Sectors by Region: {}".format(region), 
+                        legend=dict(font=dict(size=12))
+                        )}
+
+    else:
+        return {'data': [
+            go.Pie(
+                labels = sectors_by_region['statewide']['sectors.sector'],
+                values = sectors_by_region['statewide']['proposals_institutions.count'],
+                marker = dict(line=dict(color='#000000', width=2))
+                )
+            ],
+                    'layout': go.Layout(
+                        title="Sectors by Region", 
+                        legend=dict(font=dict(size=12))
+                        )}
+

@@ -50,19 +50,9 @@ content_layout = html.Div([
     ### SECTORS BY REGION PIE CHART 
     html.Div([
         html.Div([
-            html.P("Sectors by Region"),
-            '''
-            dcc.Graph(id='sectors-by-region',
-                figure = {
-                    'data': [trace0, trace1, trace2, trace3],
-                    'layout': go.Layout(
-                        xaxis=dict(tickangle=-45),
-                        barmode='group',
-                        )
-                    }
+            dcc.Graph(id='sectors-by-region-pie',
                 ),
 
-            '''
             ], className="chart_div"), 
 
         ], className = 'row',  style={'margin':'10'}), 
@@ -163,5 +153,14 @@ def total_requested_indicator_callback(region):
             ])
 def total_certified_indicator_callback(region): 
     return components.build_total_certified_indicator(region)
+
+@app.callback(Output("sectors-by-region-pie", "figure"), 
+        [
+            Input("regions-radio-items", "value")
+            ])
+def sectors_by_region_pie_callback(region):
+    return components.build_sectors_by_region_pie(region)
+
+
 
 

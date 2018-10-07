@@ -1,7 +1,6 @@
 import pandas as pd
 import mysql.connector
 from sqlalchemy import create_engine
-from utils import import_query_file
 import sys
 import os
 
@@ -67,9 +66,21 @@ class DataManager():
     ##############################
      
     def get_sectors_by_region(self, region_name='bay_area'):
-        query = self.import_query_file('./DATA_FILES/regions/{}/sectors_by_region.txt'.format(str(region_name)))
-        res = pd.read_sql(query, self.engine)
-        return res
+        temp_dict = {}
+        rootDir = "./DATA_FILES/regions/"
+        for dirName, subDirList, fileList in os.walk(rootDir):
+            for fname in fileList:
+                if fname == 'sectors_by_region.txt':
+                    temp_dict.update({dirName: fname})
+
+        final_dict = {} 
+        for key, value in temp_dict.items():
+            query = self.import_query_file('{}/{}'.format(key, value))
+            res = pd.read_sql(query, self.engine)
+            key = key.split("/")[-1]
+            final_dict.update({key: res})
+            
+        return final_dict
 
     def get_top_10_sectors_by_project_count(self, region_name='bay_area'): 
         query = self.import_query_file('./DATA_FILES/regions/{}/top_10_sectors_by_project_count.txt'.format(str(region_name)))
@@ -88,7 +99,7 @@ class DataManager():
 
     #indicators region filtered
     def get_project_count(self): 
-        #for every folder in DATA_FILES/regions run query on project_count.txt
+        #for every folder in DATA_FILES/regions/ run query on project_count.txt
         project_count_dict = {}
         rootDir = "./DATA_FILES/regions/"
         for dirName, subDirList, fileList in os.walk(rootDir):
@@ -136,7 +147,7 @@ class DataManager():
             query = self.import_query_file('{}/{}'.format(key, value))
             res = pd.read_sql(query, self.engine)
             key = key.split("/")[-1]
-            total_requested.update({key: '${:.0f}'.format(res['budget_items.budget'][0])})
+            total_requested.update({key: '${:,.0f}'.format(res['budget_items.budget'][0])})
 
         return total_requested
 
@@ -154,7 +165,7 @@ class DataManager():
             query = self.import_query_file('{}/{}'.format(key, value))
             res = pd.read_sql(query, self.engine)
             key = key.split("/")[-1]
-            total_certified.update({key: '${:.0f}'.format(res['budget_items.budget'][0])})
+            total_certified.update({key: '${:,.0f}'.format(res['budget_items.budget'][0])})
 
         return total_certified
 
